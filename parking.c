@@ -5,6 +5,7 @@
 
 #define tiempoEsperaParking 5
 #define tiempoEsperaFuera 10
+#define radio 2
 
 //compilar con gcc parking.c -lpthread -o x
 //ejecutar con ./x
@@ -58,7 +59,7 @@ int getPlazaLibreCamion(){
 }
 
 float getRatio(){
-    float coches =0.0;
+    float coches = 0.0;
     float camiones = 0.0;
     for(int i= 0;  i < numPlazas*numPlantas; i++) {
         if(aparcamiento[i]!=0){
@@ -69,10 +70,10 @@ float getRatio(){
             }
         }
     }
-    if(coches==0.0){
+    if(camiones==0.0){
         return -1;
     }
-    return camiones/coches;
+    return coches/(camiones+0.75);
 }
 
 void *coche(void* num){
@@ -103,7 +104,7 @@ void *coche(void* num){
         aparcamiento[free] = 0;
         plazasLibres++;
 
-        if(getRatio()<0.4){
+        if(getRatio()>radio){
             pthread_cond_signal(&condicion_camion);
         }
         else{
@@ -149,7 +150,7 @@ void *camion(void* num){
         aparcamiento[free+1] = 0;
         plazasLibres += 2;
 
-        if(getRatio()<0.4){
+        if(getRatio()>radio){
             pthread_cond_signal(&condicion_camion);
         }
         else{
@@ -167,21 +168,42 @@ void *camion(void* num){
 
 int main(int argc, char *argv[]){
 
-    if(argc<=2 || argc>5){
-        printf("El numero de parámetros no es valido\n");
+    if(argc<3 || argc>5){
+        printf("Uso: %s programa argumentos. El número de argumentos que ha introducido es erroneo.\n", argv[0]);
         return 1;
     }
-    if(argc>2){
-        numPlazas = atoi(argv[1]);
-        numPlantas = atoi(argv[2]);
+
+    numPlazas = atoi(argv[1]);
+    numPlantas = atoi(argv[2]);
+
+    if(argc==3){
         numCoches = numPlantas*numPlazas*2;
         numCamiones = 0;
     }
-    if(argc>3){
+    if(argc==4){
         numCoches = atoi(argv[3]);
+        numCamiones = 0;
     }
-    if(argc>4){
+    if(argc==5){
+        numCoches = atoi(argv[3]);
         numCamiones = atoi(argv[4]);
+    }
+
+    if(numPlazas<1){
+        printf("Número de plazas no válido\n");
+        return 1;
+    }
+    if(numPlantas<1){
+        printf("Número de plantas no válido\n");
+        return 1;
+    }
+    if(numCoches<1 || numCoches>100){
+        printf("Número de coches no válido\n");
+        return 1;
+    }
+    if(numCamiones<0){
+        printf("Número de camiones no válido\n");
+        return 1;
     }
 
     int i;
