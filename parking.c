@@ -5,7 +5,7 @@
 
 #define tiempoEsperaParking 5
 #define tiempoEsperaFuera 10
-#define radio 2
+#define radio 0.4
 
 //compilar con gcc parking.c -lpthread -o x
 //ejecutar con ./x
@@ -27,7 +27,7 @@ void imprimirParking(){
     printf("Parking:");
     int plantaActual = 1;
     for (int i = 0; i < numPlazas*numPlantas; i++) {
-        printf(" [%d] ", aparcamiento[i]);
+        printf(" [%03d] ", aparcamiento[i]);
         if ((i + 1)/plantaActual == numPlazas) {
             plantaActual++;
             if(i+1 != numPlantas*numPlazas){
@@ -73,7 +73,8 @@ float getRatio(){
     if(camiones==0.0){
         return -1;
     }
-    return coches/(camiones+0.75);
+//    return coches/(camiones+0.25);
+    return camiones/coches;
 }
 
 void *coche(void* num){
@@ -104,7 +105,7 @@ void *coche(void* num){
         aparcamiento[free] = 0;
         plazasLibres++;
 
-        if(getRatio()>radio){
+        if(getRatio()<radio){
             pthread_cond_signal(&condicion_camion);
         }
         else{
@@ -150,7 +151,7 @@ void *camion(void* num){
         aparcamiento[free+1] = 0;
         plazasLibres += 2;
 
-        if(getRatio()>radio){
+        if(getRatio()<radio){
             pthread_cond_signal(&condicion_camion);
         }
         else{
@@ -169,22 +170,22 @@ void *camion(void* num){
 int main(int argc, char *argv[]){
 
     if(argc<3 || argc>5){
-        printf("Uso: %s programa argumentos. El número de argumentos que ha introducido es erroneo.\n", argv[0]);
+        printf("Uso: %s. El número de argumentos que ha introducido es erroneo.\n", argv[0]);
         return 1;
     }
 
     numPlazas = atoi(argv[1]);
     numPlantas = atoi(argv[2]);
 
-    if(argc==3){
+    if(argc==3){ //2 argumentos -> plazas(x) | plantas(x) | coches(plazas*plantas*2) | camiones(0)
         numCoches = numPlantas*numPlazas*2;
         numCamiones = 0;
     }
-    if(argc==4){
+    if(argc==4){ //3 argumentos -> plazas(x) | plantas(x) | coches(x) | camiones(0)
         numCoches = atoi(argv[3]);
         numCamiones = 0;
     }
-    if(argc==5){
+    if(argc==5){ //4 argumentos -> plazas(x) | plantas(x) | coches(x) | camiones(x)
         numCoches = atoi(argv[3]);
         numCamiones = atoi(argv[4]);
     }
