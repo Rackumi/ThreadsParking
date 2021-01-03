@@ -40,7 +40,7 @@ void imprimirParking(){
     return;
 }
 
-int getPlazaLibreCoche(){
+int getPlazaLibreCoche(){//Devuelve el indice de la primera plaza de coche libre que encuentra
     for (int i = 0; i < numPlazas*numPlantas; i++) {
         if (aparcamiento[i] == 0) {
             return i; //devuelve i
@@ -49,7 +49,7 @@ int getPlazaLibreCoche(){
     return -1;
 }
 
-int getPlazaLibreCamion(){
+int getPlazaLibreCamion(){//Mismo que getPlazaLibreCoche() pero con 2 plazas contuguas
     for (int i = 0; i < numPlazas*numPlantas - 1; i++) {
         if (aparcamiento[i] == 0 && aparcamiento[i + 1] == 0 && (i+1)%numPlazas!=0 && (i+1 > 0) && (i+1<numPlazas) && (i<numPlazas)) {
             return i; //devuelve i y su contigua
@@ -58,7 +58,7 @@ int getPlazaLibreCamion(){
     return -1;
 }
 
-float getRatio(){
+float getRatio(){ //devolverá la proporcion de camiones respecto a coches
     float coches = 0.0;
     float camiones = 0.0;
     for(int i= 0;  i < numPlazas*numPlantas; i++) {
@@ -169,8 +169,8 @@ void *camion(void* num){
 
 int main(int argc, char *argv[]){
 
-    if(argc<3 || argc>5){
-        printf("Uso: %s. El número de argumentos que ha introducido es erroneo.\n", argv[0]);
+    if(argc<3 || argc>5){//Comprobaciion del numero de argumentos de entrada
+        printf("Uso: %s. Error. La entrada del programa tiene que estar entre 2 y 4 argumentos .\n", argv[0]);
         return 1;
     }
 
@@ -190,19 +190,19 @@ int main(int argc, char *argv[]){
         numCamiones = atoi(argv[4]);
     }
 
-    if(numPlazas<1){
+    if(numPlazas<1){//Comprobacion de plazas
         printf("Número de plazas no válido\n");
         return 1;
     }
-    if(numPlantas<1){
+    if(numPlantas<1){//Comprobacion de plantas
         printf("Número de plantas no válido\n");
         return 1;
     }
-    if(numCoches<1 || numCoches>100){
+    if(numCoches<1 || numCoches>100){//Comprobacion de coches para que no se mezclen con camiones
         printf("Número de coches no válido\n");
         return 1;
     }
-    if(numCamiones<0){
+    if(numCamiones<0){//Comprobacion de camiones
         printf("Número de camiones no válido\n");
         return 1;
     }
