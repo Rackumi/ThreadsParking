@@ -169,10 +169,11 @@ void *camion(void* num){
 
 int main(int argc, char *argv[]){
 
-    if(argc<3 || argc>5){//Comprobaciion del numero de argumentos de entrada
-        printf("Uso: %s. Error. La entrada del programa tiene que estar entre 2 y 4 argumentos,\n"
+    if(argc<3 || argc>5){//Comprobacion del numero de argumentos de entrada
+        printf("Uso: %s. Error. Ejecuto un simulador de un parking. \n"
+               "    La entrada del programa debe tener entre 2 y 4 argumentos,\n"
                "    siguiendo el esquema de (nº Plazas)(nº Plantas)(nº Coches)(nº Camiones). \n"
-               "    En caso de no incluir alguno o ambos de los ultimos parametros, se tomaran como 0. \n", argv[0]);
+               "    En caso de no incluir el numero de coches y/o camiones, estos se inicializaran con valores predefinidos. \n", argv[0]);
         return 1;
     }
 
